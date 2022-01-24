@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 #pragma once
 #ifndef IO
 #define IO
@@ -220,7 +223,6 @@ private:
 		std::cout << "Если хотите играть заново, нажмите Enter" << std::endl;
 		std::cout << "Если хотите выйти, нажмите Escape" << std::endl;
 		state = LOSE;
-
 	}
 
 	
@@ -385,12 +387,14 @@ public:
 		setstartposition();
 	}
 
-	Snake()
+	private:
+		Snake()
 	{
 		width = 11;
 		height = 11;
 		setstartposition();
 	}
+	public:
 
 	void changewh(int w, int h)
 	{

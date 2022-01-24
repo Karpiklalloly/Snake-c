@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 #include "Game.h"
 
 
@@ -11,11 +14,11 @@ Game::Game(const char* Name, int w, int h) : Window::Window(Name, w, h)
 	wally = SDL_CreateTextureFromSurface(renderer, wall);//создаем текстуру
 	SDL_FreeSurface(wall);
 	
-	field = new char* [controlfield1];
+	field = new char* [controlField1];
 	int i;
-	for (i = 0;i < controlfield1;i++)
+	for (i = 0;i < controlField1;i++)
 	{
-		field[i] = new char[controlfield2+1];
+		field[i] = new char[controlField2+1];
 	}
 }
 
@@ -43,31 +46,39 @@ void Game::DoAction(int index)
 
 void Game::CustomLogic()
 {
+	if (snake == NULL)
+	{
+		snake = new Snake(controlField1, controlField2);
+	}
+	else
+	{
+		delete snake;
+		snake = new Snake(controlField1, controlField2);
+	}
 	int i;
 	int j;
 
 	SDL_Keycode view = SDLK_0;
-	char** tempArray = new char* [controlfield1];
-	for (int i = 0; i < controlfield1; i++)
+	char** tempArray = new char* [controlField1];
+	for (int i = 0; i < controlField1; i++)
 	{
-		tempArray[i] = new char[controlfield2 + 1];
+		tempArray[i] = new char[controlField2 + 1];
 	}
 	setborders();
 	fillarray();
 	copytoarray(tempArray);
-	snake.setstartposition();
-	snake.setssymbols(field);
-	snake.setrandomfood(field, tempArray, controlfield1, controlfield2);
+	snake->setstartposition();
+	snake->setssymbols(field);
+	snake->setrandomfood(field, tempArray, controlField1, controlField2);
 	extern int max_score;
-	max_score = 5;//controlfield1 * controlfield2 - 1;
+	max_score = (controlField1 - 2) * (controlField2 - 2) - 1;
 	extern int score;
 	score = 0;
-	std::cout << "hihihaha" << std::endl;
-	snake.changewh(controlfield1, controlfield2);
-	snake.state = snake.NONE;
+	snake->changewh(controlField1, controlField2);
+	snake->state = snake->NONE;
 	
 
-	while (snake.state == snake.NONE)
+	while (snake->state == snake->NONE)
 	{
 		ClickOnButton();
 		SDL_PollEvent(&event);
@@ -81,11 +92,10 @@ void Game::CustomLogic()
 
 			if (event.key.keysym.sym == SDLK_ESCAPE)
 			{
-				snake.state = snake.LOSE;
+				snake->state = snake->LOSE;
 			}
 		}
-		//std::cout << "!!!!!!!!!!!!!!!!" << std::endl;
-		if (TimeLeft(0.3))//0.2
+		if (TimeLeft(0.3))//0.3
 		{
 			continue;
 		}
@@ -94,11 +104,11 @@ void Game::CustomLogic()
 		fillarray();
 		
 
-		snake.change_head(view);
-		snake.setfood(field);
-		snake.move(field, tempArray);
+		snake->change_head(view);
+		snake->setfood(field);
+		snake->move(field, tempArray);
 		
-		if (snake.state == snake.LOSE)
+		if (snake->state == snake->LOSE)
 		{
 			SDL_Color color;
 			color.a = 255;
@@ -108,7 +118,7 @@ void Game::CustomLogic()
 			Text** text = new Text * [3];
 			int sizeOfFont = 20;
 			int maxWidth = 0;
-			text[0] = new Text((UINT16*)L"Вы ПРОИГРАЛИ(((");
+			text[0] = new Text((UINT16*)L"Вы проиграли");
 			text[1] = new Text((UINT16*)L"Играть заново, нажмите Enter");
 			text[2] = new Text((UINT16*)L"Выйти, нажмите Escape");
 
@@ -144,36 +154,34 @@ void Game::CustomLogic()
 				{
 					if (event.key.keysym.sym == SDLK_ESCAPE)
 					{
-						snake.setstartposition();
+						snake->setstartposition();
 						break;
 					}
 					if (event.key.keysym.sym == SDLK_RETURN)
 					{
-						std::cout << "ENTER" << std::endl;
-					
-						snake.setstartposition();
-						snake.state = snake.NONE;
+						snake->setstartposition();
+						snake->state = snake->NONE;
 						break;
 					}
 				}
 			}
 		}
-		snake.setssymbols(field);
+		snake->setssymbols(field);
 		SDL_RenderClear(renderer);
 		Render();
 		SDL_RenderPresent(renderer);
 
 		system("cls");
-		for (i = 0;i < controlfield1;i++)
+		for (i = 0;i < controlField1;i++)
 		{
-			for (j = 0;j < controlfield2+1;j++)
+			for (j = 0;j < controlField2+1;j++)
 			{
 				std::cout << field[i][j];
 			}
 		}
 		std::cout << score << "/" << max_score << std::endl;
-		snake.checkwin();
-		if (snake.state == snake.WIN)
+		snake->checkwin();
+		if (snake->state == snake->WIN)
 		{
 			SDL_Color color;
 			color.a = 255;
@@ -183,7 +191,7 @@ void Game::CustomLogic()
 			Text** text = new Text * [3];
 			int sizeOfFont = 20;
 			int maxWidth = 0;
-			text[0] = new Text((UINT16*)L"Вы ВЫИГРАЛИ!!!");
+			text[0] = new Text((UINT16*)L"Вы выиграли!");
 			text[1] = new Text((UINT16*)L"Играть заново, нажмите Enter");
 			text[2] = new Text((UINT16*)L"Выйти, нажмите Escape");
 
@@ -219,15 +227,15 @@ void Game::CustomLogic()
 				{
 					if (event.key.keysym.sym == SDLK_ESCAPE)
 					{
-						snake.setstartposition();
+						snake->setstartposition();
 						break;
 					}
 					if (event.key.keysym.sym == SDLK_RETURN)
 					{
 						std::cout << "ENTER" << std::endl;
 
-						snake.setstartposition();
-						snake.state = snake.NONE;
+						snake->setstartposition();
+						snake->state = snake->NONE;
 						break;
 					}
 				}
@@ -242,43 +250,43 @@ void Game::DrawSnake()
 	SDL_Rect fieldRect;
 	fieldRect.w = sizeOfSnake;
 	fieldRect.h = sizeOfSnake;
-	for (int i = 0; i < controlfield1; i++)
+	for (int i = 0; i < controlField1; i++)
 	{
-		for (int j = 0; j < controlfield2; j++)
+		for (int j = 0; j < controlField2; j++)
 		{
 			if (field[i][j] == '#')
 			{
 				SDL_SetRenderDrawColor(Game::renderer, 0, 0, 0, 255);
-				fieldRect.x = x_offset + j * sizeOfSnake;
-				fieldRect.y = y_offset + i * sizeOfSnake;
+				fieldRect.x = xOffset + j * sizeOfSnake;
+				fieldRect.y = yOffset + i * sizeOfSnake;
 				SDL_RenderFillRect(Game::renderer, &fieldRect);
 			}
 			else if (field[i][j] == '@')
 			{
 				SDL_SetRenderDrawColor(Game::renderer, 194, 144, 21, 255);
-				fieldRect.x = x_offset + j * sizeOfSnake;
-				fieldRect.y = y_offset + i * sizeOfSnake;
+				fieldRect.x = xOffset + j * sizeOfSnake;
+				fieldRect.y = yOffset + i * sizeOfSnake;
 				SDL_RenderFillRect(Game::renderer, &fieldRect);
 			}
 			else if (field[i][j] == '*')
 			{
 				SDL_SetRenderDrawColor(Game::renderer, 255, 0, 0, 255);
-				fieldRect.x = x_offset + j * sizeOfSnake;
-				fieldRect.y = y_offset + i * sizeOfSnake;
+				fieldRect.x = xOffset + j * sizeOfSnake;
+				fieldRect.y = yOffset + i * sizeOfSnake;
 				SDL_RenderFillRect(Game::renderer, &fieldRect);
 			}
 			else if (field[i][j] == ' ')
 			{
 				SDL_SetRenderDrawColor(Game::renderer, 168, 168, 168, 255);
-				fieldRect.x = x_offset + j * sizeOfSnake;
-				fieldRect.y = y_offset + i * sizeOfSnake;
+				fieldRect.x = xOffset + j * sizeOfSnake;
+				fieldRect.y = yOffset + i * sizeOfSnake;
 				SDL_RenderFillRect(Game::renderer, &fieldRect);
 			}
 			else if (field[i][j] == '<' || field[i][j] == 'A' || field[i][j] == 'V' || field[i][j] == '>')
 			{
 				SDL_SetRenderDrawColor(Game::renderer, 139, 69, 19, 255);
-				fieldRect.x = x_offset + j * sizeOfSnake;
-				fieldRect.y = y_offset + i * sizeOfSnake;
+				fieldRect.x = xOffset + j * sizeOfSnake;
+				fieldRect.y = yOffset + i * sizeOfSnake;
 				SDL_RenderFillRect(Game::renderer, &fieldRect);
 			}
 		}

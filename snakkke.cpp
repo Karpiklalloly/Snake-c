@@ -1,4 +1,7 @@
-﻿#ifndef IO
+﻿// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+#ifndef IO
 #define IO
 #include <iostream> 
 #endif
@@ -35,7 +38,7 @@
 #include "Snake.h"
 #endif
 
-Snake snake;
+Snake* snake;
 #include "Menu.h"
 #include "Game.h"
 #include "AboutGame.h"
@@ -61,6 +64,7 @@ static void InitInfo()
     window = aboutGame;
     aboutGame->functions.push_back(std::bind(BackToMenu));
 }
+
 static void InitGame()
 {
     game = new Game(u8"Змейка", 1280, 720);
@@ -112,7 +116,7 @@ static bool Init()
     atexit(SDL_Quit);
     //Добавление фукнций в массивы
 
-
+    snake = NULL;
     return true;
 }
 
@@ -134,6 +138,7 @@ int main(int argc, char* argv[])
         SDL_Quit();
         return -1; // проверяем на корректность подгружение библиотек
     }
+    snake = new Snake(1, 1);
     InitMenu();
     
     while (true)//главный цикл, в котором обрабатываются все действия
@@ -150,9 +155,9 @@ int main(int argc, char* argv[])
         if (window->event.type == SDL_QUIT)
             break;//закрытие окна
         window->Update();//обновление картинки в окне
-        if (snake.state != snake.NONE)
+        if (snake->state != snake->NONE)
         {
-            snake.state = snake.NONE;
+            snake->state = snake->NONE;
             SDL_DestroyWindow(game->window);
             window = menu;
             SDL_ShowWindow(menu->window);

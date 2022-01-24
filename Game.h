@@ -36,19 +36,22 @@
 #include "Snake.h"
 #endif
 
-extern Snake snake;
+extern Snake* snake;
 
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 class Game :
     public Window
 {
    
 
 	char** field;
-	int x_offset = 450;
-	int y_offset = 100;
+	int xOffset = 450;
+	int yOffset = 100;
 	int sizeOfSnake = 30;
-	int controlfield1 = 16;
-	int controlfield2 = 12;
+	int controlField1 = 11;
+	int controlField2 = 11;
 
 	void DrawingText() override;
 	void Render() override;
@@ -63,9 +66,9 @@ class Game :
 	void fillarray()
 	{
 		int i, j;
-		for (i = 1;i < controlfield1-1;i++)
+		for (i = 1;i < controlField1-1;i++)
 		{
-			for (j = 1;j < controlfield2-1;j++)
+			for (j = 1;j < controlField2-1;j++)
 			{
 				field[i][j] = ' ';
 			}
@@ -75,24 +78,24 @@ class Game :
 	{
 		//walls
 		int i;
-		for (i = 0;i < controlfield2;i++)
+		for (i = 0;i < controlField2;i++)
 		{
 			field[0][i] = '#';
 		}
-		field[0][controlfield2] = '\n';
-		for (i = 0;i < controlfield2;i++)
+		field[0][controlField2] = '\n';
+		for (i = 0;i < controlField2;i++)
 		{
-			field[controlfield1-1][i] = '#';
+			field[controlField1-1][i] = '#';
 		}
-		field[controlfield1-1][controlfield2] = '\n';
-		for (i = 0;i < controlfield1;i++)
+		field[controlField1-1][controlField2] = '\n';
+		for (i = 0;i < controlField1;i++)
 		{
 			field[i][0] = '#';
 		}
-		for (i = 0;i < controlfield1;i++)
+		for (i = 0;i < controlField1;i++)
 		{
-			field[i][controlfield2-1] = '#';
-			field[i][controlfield2] = '\n';
+			field[i][controlField2-1] = '#';
+			field[i][controlField2] = '\n';
 		}
 	}
 	void CustomLogic() override;
@@ -101,7 +104,6 @@ class Game :
 		static int nextTime = 0;
 		int nowTime = SDL_GetTicks();
 		time *= 1000;
-		//std::cout << (nextTime - nowTime) / 1000 << std::endl;
 		if (nextTime <= nowTime)
 		{
 			nextTime = nowTime + time;
@@ -113,9 +115,9 @@ class Game :
 	void DrawSnake();
 	void copytoarray(char** array)
 	{
-		for (int i = 0; i < controlfield1; i++)
+		for (int i = 0; i < controlField1; i++)
 		{
-			for (int j = 0; j < controlfield2; j++)
+			for (int j = 0; j < controlField2; j++)
 			{
 				array[i][j] = field[i][j];
 			}
